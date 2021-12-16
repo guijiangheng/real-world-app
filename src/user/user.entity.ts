@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
@@ -13,7 +14,8 @@ export class User {
   id: string;
 
   @Column()
-  name: string;
+  @Index({ unique: true })
+  email: string;
 
   @Column()
   password: string;

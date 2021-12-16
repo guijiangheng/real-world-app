@@ -1,5 +1,7 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { getConnection } from 'typeorm';
 
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -16,7 +18,23 @@ describe('UserService', () => {
     service = module.get<UserService>(UserService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  afterEach(() => {
+    const conn = getConnection();
+    conn.close();
+  });
+
+  it('signup throws when email already exists', async () => {
+    const fakeUser = {
+      email: '123@123.com',
+      password: '123456',
+    };
+
+    try {
+      expect.assertions(1);
+      await service.signup(fakeUser.email, fakeUser.password);
+      await service.signup(fakeUser.email, fakeUser.password);
+    } catch (err) {
+      expect(err).toBeInstanceOf(BadRequestException);
+    }
   });
 });

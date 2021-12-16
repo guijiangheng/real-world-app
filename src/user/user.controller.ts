@@ -3,6 +3,7 @@ import {
   ApiBadRequestResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -17,10 +18,21 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Post('users/login')
+  @Serialize(UserDto)
+  @ApiOperation({ summary: 'Login' })
+  @ApiOkResponse({ type: UserDto, description: 'Login success' })
+  @ApiBadRequestResponse({
+    description: 'Login failed, email or password not correct',
+  })
+  signin(@Body() body: CreateUserDto) {
+    return this.userService.signin(body.email, body.password);
+  }
+
   @Post('users')
   @Serialize(UserDto)
   @ApiOperation({ summary: 'Register a new user' })
-  @ApiOkResponse({ type: UserDto, description: 'Sign up success' })
+  @ApiResponse({ status: 201, type: UserDto, description: 'Sign up success' })
   @ApiBadRequestResponse({ description: 'Sign up failed' })
   signup(@Body() body: CreateUserDto) {
     return this.userService.signup(body.email, body.password);

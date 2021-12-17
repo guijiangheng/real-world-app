@@ -42,8 +42,8 @@ describe('UserController e2e', () => {
       .send({ email: '123@123.com', password: '123456' })
       .expect(201)
       .expect((response) => {
-        expect(response.body.email).toBe('123@123.com');
-        expect(response.body.password).toBeUndefined();
+        expect(response.body.user.email).toBe('123@123.com');
+        expect(response.body.user.password).toBeUndefined();
       });
   });
 });

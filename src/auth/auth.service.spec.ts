@@ -1,4 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConnection } from 'typeorm';
@@ -12,7 +15,20 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TypeOrmModule.forRoot(), UserModule],
+      imports: [
+        TypeOrmModule.forRoot(),
+        PassportModule,
+        ConfigModule.forRoot({
+          isGlobal: true,
+        }),
+        JwtModule.registerAsync({
+          inject: [ConfigService],
+          useFactory: (config: ConfigService) => ({
+            secret: config.get<string>('JWT_SECRET'),
+          }),
+        }),
+        UserModule,
+      ],
       providers: [AuthService],
     }).compile();
 

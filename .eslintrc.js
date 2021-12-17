@@ -20,5 +20,9 @@ module.exports = {
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     'newline-before-return': 'error',
+    '@typescript-eslint/no-unused-vars': [
+      2,
+      { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
+    ],
   },
 };

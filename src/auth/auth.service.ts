@@ -3,14 +3,23 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { randomBytes, scrypt } from 'crypto';
 import { promisify } from 'util';
 
+import { User } from '@/user/user.entity';
 import { UserService } from '@/user/user.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
+
+  generateAuthToken(user: User) {
+    return this.jwtService.sign({ sub: user.id, email: user.email });
+  }
 
   async signin(email: string, password: string) {
     const user = await this.userService.findOne(email);
@@ -38,6 +47,6 @@ export class AuthService {
     const hash = (await promisify(scrypt)(password, salt, 32)) as Buffer;
     const result = hash.toString('hex') + '.' + salt;
 
-    return this.userService.create(email, result);
+    return await this.userService.create(email, result);
   }
 }

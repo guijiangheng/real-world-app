@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -17,11 +10,13 @@ import {
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { LocalAuthGuard } from '@/auth/local-auth.guard';
+import { CurrentUser } from '@/decorators/current-user.decorator';
 import { Serialize } from '@/interceptors/serialize.interceptor';
 
 import { AuthService } from './../auth/auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserAuthResponse, UserResponse } from './dtos/user.dto';
+import { User } from './user.entity';
 
 @Controller()
 @ApiTags('User and Authorization')
@@ -36,11 +31,11 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Login failed, email or password not correct',
   })
-  signin(@Request() req: any, @Body() _: CreateUserDto) {
+  signin(@CurrentUser() user: User, @Body() _: CreateUserDto) {
     return {
       user: {
-        ...req.user,
-        token: this.authService.generateAuthToken(req.user),
+        ...user,
+        token: this.authService.generateAuthToken(user),
       },
     };
   }
@@ -71,9 +66,9 @@ export class UserController {
   @ApiBearerAuth()
   @ApiResponse({ status: 201, type: UserResponse, description: 'Ok' })
   @ApiBadRequestResponse({ description: 'Unauthorized' })
-  async whoAmI(@Request() req: any) {
+  async whoAmI(@CurrentUser() user: User) {
     return {
-      user: req.user,
+      user,
     };
   }
 }

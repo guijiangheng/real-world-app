@@ -9,6 +9,18 @@ export class UserDto {
   @ApiProperty()
   @Expose()
   email: string;
+
+  @ApiProperty()
+  @Expose()
+  username: string;
+
+  @ApiProperty()
+  @Expose()
+  bio: string;
+
+  @ApiProperty()
+  @Expose()
+  avatar: string;
 }
 
 export class UserAuthDto extends UserDto {
@@ -18,12 +30,14 @@ export class UserAuthDto extends UserDto {
 }
 
 export class UserResponse {
+  @ApiProperty()
   @Type(() => UserDto)
   @Expose()
   user: UserDto;
 }
 
 export class UserAuthResponse {
+  @ApiProperty()
   @Type(() => UserAuthDto)
   @Expose()
   user: UserAuthDto;

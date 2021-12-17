@@ -46,4 +46,18 @@ describe('UserController e2e', () => {
         expect(response.body.user.password).toBeUndefined();
       });
   });
+
+  it('signup as a new user then get the currently logged in user', async () => {
+    const email = '123@123.com';
+    const { body } = await request(app.getHttpServer())
+      .post('/users')
+      .send({ email, password: 'sdfsdf' })
+      .expect(201);
+
+    const response = await request(app.getHttpServer())
+      .get('/user')
+      .set('Authorization', `Bearer ${body.user.token}`);
+
+    expect(response.body.user.email).toBe(email);
+  });
 });

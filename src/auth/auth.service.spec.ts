@@ -3,19 +3,20 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConnection } from 'typeorm';
 
-import { User } from './user.entity';
-import { UserService } from './user.service';
+import { UserModule } from '@/user/user.module';
 
-describe('UserService', () => {
-  let service: UserService;
+import { AuthService } from './auth.service';
+
+describe('AuthService', () => {
+  let service: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TypeOrmModule.forRoot(), TypeOrmModule.forFeature([User])],
-      providers: [UserService],
+      imports: [TypeOrmModule.forRoot(), UserModule],
+      providers: [AuthService],
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    service = module.get<AuthService>(AuthService);
   });
 
   afterEach(() => {

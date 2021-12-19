@@ -28,5 +28,6 @@ import { ProfileModule } from './profile/profile.module';
       useValue: new ValidationPipe({ whitelist: true }),
     },
   ],
+  exports: [AppService],
 })
 export class AppModule {}

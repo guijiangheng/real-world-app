@@ -1,14 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import * as faker from 'faker';
 import * as R from 'ramda';
 import { getConnection } from 'typeorm';
 
-import { UserModule } from '@/user/user.module';
+import { AppModule } from '@/app.module';
 
 import { AuthService } from './auth.service';
 
@@ -17,21 +13,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forRoot(),
-        PassportModule,
-        ConfigModule.forRoot({
-          isGlobal: true,
-        }),
-        JwtModule.registerAsync({
-          inject: [ConfigService],
-          useFactory: (config: ConfigService) => ({
-            secret: config.get<string>('JWT_SECRET'),
-          }),
-        }),
-        UserModule,
-      ],
-      providers: [AuthService],
+      imports: [AppModule],
     }).compile();
 
     service = module.get<AuthService>(AuthService);

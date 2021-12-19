@@ -1,12 +1,9 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomBytes, scrypt } from 'crypto';
 import { promisify } from 'util';
 
+import { CreateUserDto } from '@/user/dtos/create-user.dto';
 import { User } from '@/user/user.entity';
 import { UserService } from '@/user/user.service';
 
@@ -38,15 +35,11 @@ export class AuthService {
     return user;
   }
 
-  async signup(email: string, password: string) {
-    if (await this.userService.findOne(email)) {
-      throw new BadRequestException('email already exists');
-    }
-
+  async signup(dto: CreateUserDto) {
     const salt = randomBytes(8).toString('hex');
-    const hash = (await promisify(scrypt)(password, salt, 32)) as Buffer;
+    const hash = (await promisify(scrypt)(dto.password, salt, 32)) as Buffer;
     const result = hash.toString('hex') + '.' + salt;
 
-    return await this.userService.create(email, result);
+    return await this.userService.create({ ...dto, password: result });
   }
 }

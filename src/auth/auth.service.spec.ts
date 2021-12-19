@@ -4,6 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as faker from 'faker';
+import * as R from 'ramda';
 import { getConnection } from 'typeorm';
 
 import { UserModule } from '@/user/user.module';
@@ -41,15 +43,34 @@ describe('AuthService', () => {
   });
 
   it('signup throws when email already exists', async () => {
-    const fakeUser = {
-      email: '123@123.com',
-      password: '123456',
-    };
+    const email = faker.internet.email();
+    const fakeUsers = R.map(() => ({
+      username: faker.internet.userName(),
+      email,
+      password: faker.internet.password(),
+    }))(R.range(0, 2));
 
     try {
       expect.assertions(1);
-      await service.signup(fakeUser.email, fakeUser.password);
-      await service.signup(fakeUser.email, fakeUser.password);
+      await service.signup(fakeUsers[0]);
+      await service.signup(fakeUsers[1]);
+    } catch (err) {
+      expect(err).toBeInstanceOf(BadRequestException);
+    }
+  });
+
+  it('signup throws when username already exists', async () => {
+    const username = faker.internet.userName();
+    const fakeUsers = R.map(() => ({
+      username,
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    }))(R.range(0, 2));
+
+    try {
+      expect.assertions(1);
+      await service.signup(fakeUsers[0]);
+      await service.signup(fakeUsers[1]);
     } catch (err) {
       expect(err).toBeInstanceOf(BadRequestException);
     }

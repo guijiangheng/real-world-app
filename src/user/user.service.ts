@@ -6,25 +6,36 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private readonly userRepo: Repository<User>,
+  ) {}
 
   findOne(email: string) {
     return this.userRepo.findOne({ email });
   }
 
-  async create(email: string, password: string) {
-    if (await this.findOne(email)) {
-      throw new BadRequestException('email already exists');
+  async create(dto: CreateUserDto) {
+    const { username, email, password } = dto;
+
+    const qb = this.userRepo
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username })
+      .orWhere('user.email = :email', { email });
+
+    const user = await qb.getOne();
+
+    if (user) {
+      throw new BadRequestException('username and email must be unique');
     }
 
-    const [username] = email.split('@');
-    const user = this.userRepo.create({ username, email, password });
+    const newUser = this.userRepo.create({ username, email, password });
 
-    return await this.userRepo.save(user);
+    return await this.userRepo.save(newUser);
   }
 
   async update(id: string, attrs: Partial<User>) {

@@ -45,8 +45,8 @@ export class UserController {
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, type: UserAuthResponse, description: 'Ok' })
   @ApiBadRequestResponse({ description: 'Sign up failed' })
-  async signup(@Body() body: CreateUserDto) {
-    const user = await this.authService.signup(body.email, body.password);
+  async signup(@Body() dto: CreateUserDto) {
+    const user = await this.authService.signup(dto);
 
     return {
       user: {

@@ -19,8 +19,22 @@ export class UserService {
 
   findOne(conditions: FindCondition<User>);
 
-  findOne(arg: string | FindCondition<User>) {
+  findOne(arg: string | FindCondition<User>): Promise<User | undefined> {
     return this.userRepo.findOne(arg as any);
+  }
+
+  findOneOrThrow(id: string);
+
+  findOneOrThrow(conditions: FindCondition<User>);
+
+  async findOneOrThrow(arg: string | FindCondition<User>): Promise<User> {
+    const user = await this.userRepo.findOne(arg as any);
+
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+
+    return user;
   }
 
   async create(dto: CreateUserDto) {

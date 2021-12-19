@@ -1,4 +1,11 @@
-import { Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -8,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { JwtAuthGuard, OptionalJwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import { Serialize } from '@/interceptors/serialize.interceptor';
 import { User } from '@/user/user.entity';
@@ -20,6 +27,25 @@ import { ProfileService } from './profile.service';
 @ApiTags('Profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
+
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get('/:username')
+  @Serialize(ProfileResponse)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get a profile',
+    description: 'Get a profile of a user of the system. Auth is optional',
+  })
+  @ApiOkResponse({ type: ProfileResponse, description: 'Ok' })
+  @ApiNotFoundResponse({ description: 'user not found' })
+  async getProfile(
+    @CurrentUser() user: User | undefined,
+    @Param('username') username: string,
+  ) {
+    return {
+      profile: await this.profileService.getProfile(user?.id, username),
+    };
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('/:username/follow')

@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -18,12 +14,30 @@ export class ProfileService {
     private readonly userService: UserService,
   ) {}
 
-  async follow(followerId: string, username: string): Promise<ProfileDto> {
-    const followingUser = await this.userService.findOne({ username });
+  async getProfile(
+    followerId: string | undefined,
+    username: string,
+  ): Promise<ProfileDto> {
+    const followingUser = await this.userService.findOneOrThrow({ username });
 
-    if (!followingUser) {
-      throw new NotFoundException('following user not found');
+    let following = false;
+
+    if (followerId) {
+      const followResult = await this.followRepo.find({
+        followerId,
+        followingId: followingUser.id,
+      });
+      following = !!followResult;
     }
+
+    return {
+      ...followingUser,
+      following,
+    };
+  }
+
+  async follow(followerId: string, username: string): Promise<ProfileDto> {
+    const followingUser = await this.userService.findOneOrThrow({ username });
 
     if (followerId === followingUser.id) {
       throw new BadRequestException(
@@ -51,11 +65,7 @@ export class ProfileService {
   }
 
   async unFollow(followerId: string, username: string): Promise<ProfileDto> {
-    const followingUser = await this.userService.findOne({ username });
-
-    if (!followingUser) {
-      throw new NotFoundException('following user not found');
-    }
+    const followingUser = await this.userService.findOneOrThrow({ username });
 
     if (followerId === followingUser.id) {
       throw new BadRequestException(

@@ -18,6 +18,7 @@ export class User {
   email: string;
 
   @Column()
+  @Index({ unique: true })
   username: string;
 
   @Column()

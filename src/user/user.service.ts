@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindCondition, Repository } from 'typeorm';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './user.entity';
@@ -15,8 +15,12 @@ export class UserService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
-  findOne(email: string) {
-    return this.userRepo.findOne({ email });
+  findOne(id: string);
+
+  findOne(conditions: FindCondition<User>);
+
+  findOne(arg: string | FindCondition<User>) {
+    return this.userRepo.findOne(arg as any);
   }
 
   async create(dto: CreateUserDto) {

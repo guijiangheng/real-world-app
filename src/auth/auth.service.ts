@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   async signin(email: string, password: string) {
-    const user = await this.userService.findOne(email);
+    const user = await this.userService.findOne({ email });
 
     if (!user) {
       throw new UnauthorizedException('email or password not correct');

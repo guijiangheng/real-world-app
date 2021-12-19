@@ -15,6 +15,7 @@ import { Serialize } from '@/interceptors/serialize.interceptor';
 
 import { AuthService } from './../auth/auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { LoginDto } from './dtos/login.dto';
 import { UserAuthResponse, UserResponse } from './dtos/user.dto';
 import { User } from './user.entity';
 
@@ -31,7 +32,7 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Login failed, email or password not correct',
   })
-  signin(@CurrentUser() user: User, @Body() _: CreateUserDto) {
+  signin(@CurrentUser() user: User, @Body() _: LoginDto) {
     return {
       user: {
         ...user,
@@ -59,11 +60,11 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/user')
   @Serialize(UserResponse)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get current user',
     description: 'Get the currently logged-in user',
   })
-  @ApiBearerAuth()
   @ApiResponse({ status: 201, type: UserResponse, description: 'Ok' })
   @ApiBadRequestResponse({ description: 'Unauthorized' })
   async whoAmI(@CurrentUser() user: User) {

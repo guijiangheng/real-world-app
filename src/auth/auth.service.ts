@@ -40,6 +40,6 @@ export class AuthService {
     const hash = (await promisify(scrypt)(dto.password, salt, 32)) as Buffer;
     const result = hash.toString('hex') + '.' + salt;
 
-    return await this.userService.create({ ...dto, password: result });
+    return this.userService.create({ ...dto, password: result });
   }
 }

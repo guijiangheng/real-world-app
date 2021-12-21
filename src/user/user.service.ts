@@ -53,7 +53,7 @@ export class UserService {
 
     const newUser = this.userRepo.create({ username, email, password });
 
-    return await this.userRepo.save(newUser);
+    return this.userRepo.save(newUser);
   }
 
   async update(id: string, attrs: Partial<User>) {

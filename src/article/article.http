@@ -1,0 +1,29 @@
+@baseUrl = http://localhost:3000
+@jwt = ''
+
+
+# @name login
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "gjh@gmail.com",
+  "password": "sdfsdf"
+}
+
+###
+
+@token = {{login.response.body.$.user.token}}
+
+# Create an article
+POST {{baseUrl}}/articles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "article": {
+    "title": "sdf",
+    "description": "sdf",
+    "body": "sdf"
+  }
+}

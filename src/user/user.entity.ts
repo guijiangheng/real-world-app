@@ -3,10 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
+
+import { Article } from '@/article/article.entity';
 
 @Entity()
 export class User {
@@ -38,4 +41,7 @@ export class User {
 
   @VersionColumn()
   version: number;
+
+  @OneToMany(() => Article, (article) => article.author)
+  articles: Article[];
 }

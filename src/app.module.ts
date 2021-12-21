@@ -27,7 +27,7 @@ import { ProfileModule } from './profile/profile.module';
     AppService,
     {
       provide: APP_PIPE,
-      useValue: new ValidationPipe({ whitelist: true }),
+      useValue: new ValidationPipe({ whitelist: true, transform: true }),
     },
   ],
   exports: [AppService],

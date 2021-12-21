@@ -7,6 +7,7 @@ import { UserModule } from '@/user/user.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ArticleModule } from './article/article.module';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 
@@ -19,6 +20,7 @@ import { ProfileModule } from './profile/profile.module';
     UserModule,
     AuthModule,
     ProfileModule,
+    ArticleModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -53,7 +61,17 @@ export class ArticleController {
   @ApiNotFoundResponse({ description: 'Article not found' })
   async getArticle(@Param('slug') slug: string) {
     return {
-      article: await this.articleService.findOne({ slug }),
+      article: await this.articleService.findOneOrThrow({ slug }),
     };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:slug')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete an article' })
+  @ApiOkResponse({ description: 'Delete success' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  delete(@Param('slug') slug: string) {
+    return this.articleService.delete(slug);
   }
 }

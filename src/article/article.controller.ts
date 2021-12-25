@@ -1,7 +1,9 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -38,6 +40,20 @@ export class ArticleController {
   ) {
     return {
       article: await this.articleService.create(user, dto.article),
+    };
+  }
+
+  @Get('/:slug')
+  @Serialize(CreateArticleResponse)
+  @ApiOperation({
+    summary: 'Get an article',
+    description: 'Get an article, auth not required',
+  })
+  @ApiOkResponse({ type: CreateArticleResponse, description: 'Ok' })
+  @ApiNotFoundResponse({ description: 'Article not found' })
+  async getArticle(@Param('slug') slug: string) {
+    return {
+      article: await this.articleService.findOne({ slug }),
     };
   }
 }

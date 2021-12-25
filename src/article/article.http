@@ -15,7 +15,7 @@ Content-Type: application/json
 
 @token = {{login.response.body.$.user.token}}
 
-# Create an article
+# @name createArticle
 POST {{baseUrl}}/articles
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -27,3 +27,11 @@ Content-Type: application/json
     "body": "sdf"
   }
 }
+
+###
+
+@slug = {{createArticle.response.body.$.article.slug}}
+
+# Get an article by slug
+GET {{baseUrl}}/articles/{{slug}}
+Authorization: Bearer {{token}}

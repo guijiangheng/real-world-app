@@ -57,6 +57,14 @@ export class AuthorDto {
 export class ArticleDto {
   @ApiProperty()
   @Expose()
+  id: string;
+
+  @ApiProperty()
+  @Expose()
+  slug: string;
+
+  @ApiProperty()
+  @Expose()
   title: string;
 
   @ApiProperty()

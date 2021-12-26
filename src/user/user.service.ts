@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindCondition, Repository } from 'typeorm';
+import { FindCondition, FindOneOptions, Repository } from 'typeorm';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './user.entity';
@@ -15,20 +15,29 @@ export class UserService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
-  findOne(id: string);
+  findOne(
+    id: string,
+    options?: FindOneOptions<User>,
+  ): Promise<User | undefined>;
 
-  findOne(conditions: FindCondition<User>);
+  findOne(
+    conditions: FindCondition<User>,
+    options?: FindOneOptions<User>,
+  ): Promise<User | undefined>;
 
-  findOne(arg: string | FindCondition<User>): Promise<User | undefined> {
-    return this.userRepo.findOne(arg as any);
+  findOne(...args: any): Promise<User | undefined> {
+    return this.userRepo.findOne(...args);
   }
 
-  findOneOrThrow(id: string);
+  findOneOrThrow(id: string, options?: FindOneOptions<User>): Promise<User>;
 
-  findOneOrThrow(conditions: FindCondition<User>);
+  findOneOrThrow(
+    conditions: FindCondition<User>,
+    options?: FindOneOptions<User>,
+  ): Promise<User>;
 
-  async findOneOrThrow(arg: string | FindCondition<User>): Promise<User> {
-    const user = await this.userRepo.findOne(arg as any);
+  async findOneOrThrow(...args: any): Promise<User> {
+    const user = await this.userRepo.findOne(...args);
 
     if (!user) {
       throw new NotFoundException('user not found');

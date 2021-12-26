@@ -1,8 +1,10 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -35,9 +37,15 @@ export class Article {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @DeleteDateColumn()
+  deletedAt: Date;
+
   @VersionColumn()
   version: number;
 
   @ManyToOne(() => User, (user) => user.articles)
   author: User;
+
+  @ManyToMany(() => User, (user) => user.favoriteArticles)
+  favoriteBy: User[];
 }

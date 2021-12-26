@@ -8,6 +8,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { UserDto } from '@/user/dtos/user.dto';
+
 export class NewArticle {
   @ApiProperty()
   @IsString()
@@ -34,24 +36,6 @@ export class CreateArticleDto {
   @IsObject()
   @ValidateNested()
   readonly article: NewArticle;
-}
-
-export class AuthorDto {
-  @ApiProperty()
-  @Expose()
-  username: string;
-
-  @ApiProperty()
-  @Expose()
-  email: string;
-
-  @ApiProperty()
-  @Expose()
-  bio: string;
-
-  @ApiProperty()
-  @Expose()
-  avatar: string;
 }
 
 export class ArticleDto {
@@ -84,9 +68,24 @@ export class ArticleDto {
   updatedAt: Date;
 
   @ApiProperty()
-  @Type(() => AuthorDto)
   @Expose()
-  author: AuthorDto;
+  @Transform(({ value }) => value ?? false)
+  favorited: boolean;
+
+  @ApiProperty()
+  @Expose()
+  @Transform(({ value }) => value ?? 0)
+  favoritesCount: number;
+
+  @ApiProperty()
+  @Type(() => UserDto)
+  @Expose()
+  author: UserDto;
+
+  @ApiProperty({ type: () => [UserDto] })
+  @Type(() => UserDto)
+  @Expose()
+  favoriteBy: UserDto[];
 }
 
 export class CreateArticleResponse {

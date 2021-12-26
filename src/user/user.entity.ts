@@ -3,6 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -44,4 +46,8 @@ export class User {
 
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
+
+  @ManyToMany(() => Article, (article) => article.favoriteBy)
+  @JoinTable()
+  favoriteArticles: Article[];
 }

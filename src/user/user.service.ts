@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindCondition, FindOneOptions, Repository } from 'typeorm';
 
@@ -11,14 +7,9 @@ import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private readonly userRepo: Repository<User>,
-  ) {}
+  constructor(@InjectRepository(User) private readonly userRepo: Repository<User>) {}
 
-  findOne(
-    id: string,
-    options?: FindOneOptions<User>,
-  ): Promise<User | undefined>;
+  findOne(id: string, options?: FindOneOptions<User>): Promise<User | undefined>;
 
   findOne(
     conditions: FindCondition<User>,
@@ -31,10 +22,7 @@ export class UserService {
 
   findOneOrThrow(id: string, options?: FindOneOptions<User>): Promise<User>;
 
-  findOneOrThrow(
-    conditions: FindCondition<User>,
-    options?: FindOneOptions<User>,
-  ): Promise<User>;
+  findOneOrThrow(conditions: FindCondition<User>, options?: FindOneOptions<User>): Promise<User>;
 
   async findOneOrThrow(...args: any): Promise<User> {
     const user = await this.userRepo.findOne(...args);

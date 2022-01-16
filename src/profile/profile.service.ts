@@ -14,10 +14,7 @@ export class ProfileService {
     private readonly userService: UserService,
   ) {}
 
-  async getProfile(
-    followerId: string | undefined,
-    username: string,
-  ): Promise<ProfileDto> {
+  async getProfile(followerId: string | undefined, username: string): Promise<ProfileDto> {
     const followingUser = await this.userService.findOneOrThrow({ username });
 
     let following = false;
@@ -40,9 +37,7 @@ export class ProfileService {
     const followingUser = await this.userService.findOneOrThrow({ username });
 
     if (followerId === followingUser.id) {
-      throw new BadRequestException(
-        'follower id and following user id cannot be equal',
-      );
+      throw new BadRequestException('follower id and following user id cannot be equal');
     }
 
     const follow = await this.followRepo.findOne({
@@ -68,9 +63,7 @@ export class ProfileService {
     const followingUser = await this.userService.findOneOrThrow({ username });
 
     if (followerId === followingUser.id) {
-      throw new BadRequestException(
-        'follower id and following user id cannot be equal',
-      );
+      throw new BadRequestException('follower id and following user id cannot be equal');
     }
 
     await this.followRepo.delete({ followerId, followingId: followingUser.id });

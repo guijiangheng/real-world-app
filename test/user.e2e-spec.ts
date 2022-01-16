@@ -59,10 +59,7 @@ describe('UserController e2e', () => {
   });
 
   it('signup as a new user then get the currently logged in user', async () => {
-    const { body } = await request(app.getHttpServer())
-      .post('/users')
-      .send(fakeUser)
-      .expect(201);
+    const { body } = await request(app.getHttpServer()).post('/users').send(fakeUser).expect(201);
 
     const response = await request(app.getHttpServer())
       .get('/user')

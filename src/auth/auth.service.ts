@@ -9,10 +9,7 @@ import { UserService } from '@/user/user.service';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private userService: UserService, private jwtService: JwtService) {}
 
   generateAuthToken(user: User) {
     return this.jwtService.sign({ sub: user.id, email: user.email });

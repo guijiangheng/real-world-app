@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -38,10 +31,7 @@ export class ProfileController {
   })
   @ApiOkResponse({ type: ProfileResponse, description: 'Ok' })
   @ApiNotFoundResponse({ description: 'user not found' })
-  async getProfile(
-    @CurrentUser() user: User | undefined,
-    @Param('username') username: string,
-  ) {
+  async getProfile(@CurrentUser() user: User | undefined, @Param('username') username: string) {
     return {
       profile: await this.profileService.getProfile(user?.id, username),
     };
@@ -73,10 +63,7 @@ export class ProfileController {
   @ApiBadRequestResponse({
     description: 'Follower id and following user id cannot be equal',
   })
-  async unFollow(
-    @CurrentUser() user: User,
-    @Param('username') username: string,
-  ) {
+  async unFollow(@CurrentUser() user: User, @Param('username') username: string) {
     return {
       profile: await this.profileService.unFollow(user.id, username),
     };

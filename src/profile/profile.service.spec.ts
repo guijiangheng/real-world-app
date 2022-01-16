@@ -50,19 +50,13 @@ describe('ProfileService', () => {
     });
 
     it('follow success', async () => {
-      const { following } = await profileService.follow(
-        aUser.id,
-        bUser.username,
-      );
+      const { following } = await profileService.follow(aUser.id, bUser.username);
       expect(following).toBe(true);
     });
 
     it('duplicate follow request should be ok', async () => {
       await profileService.follow(aUser.id, bUser.username);
-      const { following } = await profileService.follow(
-        aUser.id,
-        bUser.username,
-      );
+      const { following } = await profileService.follow(aUser.id, bUser.username);
       expect(following).toBe(true);
     });
   });
@@ -78,37 +72,22 @@ describe('ProfileService', () => {
     });
 
     it('unFollow success', async () => {
-      const { following } = await profileService.follow(
-        aUser.id,
-        bUser.username,
-      );
+      const { following } = await profileService.follow(aUser.id, bUser.username);
       expect(following).toBe(true);
-      const unFollowResult = await profileService.unFollow(
-        aUser.id,
-        bUser.username,
-      );
+      const unFollowResult = await profileService.unFollow(aUser.id, bUser.username);
       expect(unFollowResult.following).toBe(false);
     });
 
     it('unFollow non-followed user should be ok', async () => {
-      const { following } = await profileService.unFollow(
-        aUser.id,
-        bUser.username,
-      );
+      const { following } = await profileService.unFollow(aUser.id, bUser.username);
       expect(following).toBe(false);
     });
 
     it('duplicate unFollow request should be ok', async () => {
-      const { following } = await profileService.follow(
-        aUser.id,
-        bUser.username,
-      );
+      const { following } = await profileService.follow(aUser.id, bUser.username);
       expect(following).toBe(true);
       await profileService.unFollow(aUser.id, bUser.username);
-      const unFollowResult = await profileService.unFollow(
-        aUser.id,
-        bUser.username,
-      );
+      const unFollowResult = await profileService.unFollow(aUser.id, bUser.username);
       expect(unFollowResult.following).toBe(false);
     });
   });

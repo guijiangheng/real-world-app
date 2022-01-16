@@ -6,9 +6,10 @@ import { User } from '@/user/user.entity';
 import { ArticleController } from './article.controller';
 import { Article } from './article.entity';
 import { ArticleService } from './article.service';
+import { Comment } from './comment.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Article, User])],
+  imports: [TypeOrmModule.forFeature([Article, User, Comment])],
   providers: [ArticleService],
   controllers: [ArticleController],
   exports: [ArticleService],

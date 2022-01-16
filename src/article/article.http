@@ -66,7 +66,33 @@ Authorization: Bearer {{token}}
 
 ###
 
-# Delete article
+# Delete an article
 DELETE {{baseUrl}}/articles/{{slug}}
+Authorization: Bearer {{token}}
+
+###
+
+# @name createComment
+# Create a comment
+POST {{baseUrl}}/articles/{{slug}}/comments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "comment": {
+    "body": "this is a comment"
+  }
+}
+
+###
+@id = {{createComment.response.body.$.comment.id}}
+
+# Get article comments
+GET {{baseUrl}}/articles/{{slug}}/comments
+
+###
+
+# Delete an comment
+DELETE {{baseUrl}}/articles/{{slug}}/comments/{{id}}
 Authorization: Bearer {{token}}
 

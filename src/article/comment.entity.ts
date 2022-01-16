@@ -3,10 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Index,
-  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
@@ -14,22 +11,12 @@ import {
 
 import { User } from '@/user/user.entity';
 
-import { Comment } from './comment.entity';
+import { Article } from './article.entity';
 
 @Entity()
-export class Article {
+export class Comment {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ unique: true })
-  @Index()
-  slug: string;
-
-  @Column()
-  title: string;
-
-  @Column()
-  description: string;
+  id: number;
 
   @Column()
   body: string;
@@ -46,12 +33,9 @@ export class Article {
   @VersionColumn()
   version: number;
 
-  @ManyToOne(() => User, (user) => user.articles)
+  @ManyToOne(() => User, (user) => user.comments)
   author: User;
 
-  @ManyToMany(() => User, (user) => user.favoriteArticles)
-  favoriteBy: User[];
-
-  @OneToMany(() => Comment, (comment) => comment.article)
-  comments: Comment[];
+  @ManyToOne(() => Article, (article) => article.comments)
+  article: Article;
 }

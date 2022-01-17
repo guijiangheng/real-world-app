@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { ArticleModule } from './article/article.module';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ProfileModule } from './profile/profile.module';
     AuthModule,
     ProfileModule,
     ArticleModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [

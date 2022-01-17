@@ -21,7 +21,7 @@ import {
   NewCommentRequest,
   SingleCommentResponse,
 } from './dtos/comment.dto';
-import { CreateArticleDto, CreateArticleResponse } from './dtos/create-article.dto';
+import { NewArticleRequest, SingleArticleResponse } from './dtos/create-article.dto';
 
 @Controller('articles')
 export class ArticleController {
@@ -30,14 +30,14 @@ export class ArticleController {
   // create article
   @UseGuards(JwtAuthGuard)
   @Post()
-  @Serialize(CreateArticleResponse)
+  @Serialize(SingleArticleResponse)
   @ApiBearerAuth()
   @ApiTags('Articles')
   @ApiOperation({ summary: 'Create an article' })
-  @ApiResponse({ status: 201, type: CreateArticleResponse, description: 'Ok' })
+  @ApiResponse({ status: 201, type: SingleArticleResponse, description: 'Ok' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Invalid params' })
-  async createArticle(@CurrentUser() user: User, @Body() dto: CreateArticleDto) {
+  async createArticle(@CurrentUser() user: User, @Body() dto: NewArticleRequest) {
     return {
       article: await this.articleService.create(user, dto.article),
     };
@@ -46,14 +46,14 @@ export class ArticleController {
   // get article detail
   @UseGuards(OptionalJwtAuthGuard)
   @Get('/:slug')
-  @Serialize(CreateArticleResponse)
+  @Serialize(SingleArticleResponse)
   @ApiTags('Articles')
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get an article',
     description: 'Get an article, auth not required',
   })
-  @ApiOkResponse({ type: CreateArticleResponse, description: 'Ok' })
+  @ApiOkResponse({ type: SingleArticleResponse, description: 'Ok' })
   @ApiNotFoundResponse({ description: 'Article not found' })
   async getArticle(@CurrentUser() user: User | undefined, @Param('slug') slug: string) {
     const article = await this.articleService.findOneOrThrow(
@@ -85,11 +85,11 @@ export class ArticleController {
   // favorite article
   @UseGuards(JwtAuthGuard)
   @Post('/:slug/favorite')
-  @Serialize(CreateArticleResponse)
+  @Serialize(SingleArticleResponse)
   @ApiTags('Favorites')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Favorite an article' })
-  @ApiResponse({ status: 201, description: 'Ok', type: CreateArticleResponse })
+  @ApiResponse({ status: 201, description: 'Ok', type: SingleArticleResponse })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Article not found' })
   async favorite(@CurrentUser() user: User, @Param('slug') slug: string) {
@@ -101,11 +101,11 @@ export class ArticleController {
   // unfavorite article
   @UseGuards(JwtAuthGuard)
   @Delete('/:slug/favorite')
-  @Serialize(CreateArticleResponse)
+  @Serialize(SingleArticleResponse)
   @ApiTags('Favorites')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Unfavorite an article' })
-  @ApiOkResponse({ description: 'Ok', type: CreateArticleResponse })
+  @ApiOkResponse({ description: 'Ok', type: SingleArticleResponse })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Article not found' })
   async unFavorite(@CurrentUser() user: User, @Param('slug') slug: string) {

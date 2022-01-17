@@ -13,7 +13,7 @@ export class AppController {
     description: 'Hello world API for health check',
   })
   @ApiProduces('text/plain')
-  @ApiOkResponse({ description: 'Server works fine' })
+  @ApiOkResponse({ description: 'Ok' })
   getHello(): string {
     return this.appService.getHello();
   }

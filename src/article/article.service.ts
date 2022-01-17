@@ -5,6 +5,7 @@ import * as R from 'ramda';
 import * as slug from 'slug';
 import { FindCondition, FindOneOptions, Repository } from 'typeorm';
 
+import { Tag } from '@/tag/tag.entity';
 import { User } from '@/user/user.entity';
 
 import { Article } from './article.entity';
@@ -21,6 +22,8 @@ export class ArticleService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(Comment)
     private readonly commentRepo: Repository<Comment>,
+    @InjectRepository(Tag)
+    private readonly tagRepo: Repository<Tag>,
   ) {}
 
   findOne(id: string, options?: FindOneOptions<Article>): Promise<Article | undefined>;
@@ -51,9 +54,20 @@ export class ArticleService {
     return article;
   }
 
-  create(user: User, article: NewArticle): Promise<Article> {
+  async create(user: User, article: NewArticle): Promise<Article> {
+    const allTags = await this.tagRepo.find();
+    const tagList = R.difference(
+      article.tagList,
+      allTags.map((tag) => tag.label),
+    ).map((label) => this.tagRepo.create({ label }));
+
+    await this.tagRepo.save(tagList);
+
+    const tagSet = R.indexBy(R.prop('label'), await this.tagRepo.find());
+
     const newArticle = this.articleRepo.create({
       ...article,
+      tags: article.tagList.map((label) => tagSet[label]),
       author: user,
       slug: this.slugify(article.title),
     });
@@ -63,7 +77,7 @@ export class ArticleService {
 
   async favorite(userId: string, slug: string): Promise<ArticleDto> {
     const [article, user] = await Promise.all([
-      this.findOneOrThrow({ slug }, { relations: ['author', 'favoriteBy'] }),
+      this.findOneOrThrow({ slug }, { relations: ['author', 'favoriteBy', 'tags'] }),
       this.userRepo.findOne(userId, { relations: ['favoriteArticles'] }),
     ]);
 
@@ -76,6 +90,7 @@ export class ArticleService {
 
     return {
       ...article,
+      tagList: article.tags.map((tag) => tag.label),
       favorited: true,
       favoritesCount: article.favoriteBy.length,
     };
@@ -83,7 +98,7 @@ export class ArticleService {
 
   async unFavorite(userId: string, slug: string): Promise<ArticleDto> {
     const [article, user] = await Promise.all([
-      this.findOneOrThrow({ slug }, { relations: ['author', 'favoriteBy'] }),
+      this.findOneOrThrow({ slug }, { relations: ['author', 'favoriteBy', 'tags'] }),
       this.userRepo.findOne(userId, { relations: ['favoriteArticles'] }),
     ]);
 
@@ -96,6 +111,7 @@ export class ArticleService {
 
     return {
       ...article,
+      tagList: article.tags.map((tag) => tag.label),
       favorited: false,
       favoritesCount: article.favoriteBy.length,
     };

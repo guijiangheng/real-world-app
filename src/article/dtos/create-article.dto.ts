@@ -22,9 +22,15 @@ export class NewArticle {
   @IsOptional()
   @Transform(({ value }) => (value || '').trim())
   readonly body: string;
+
+  @ApiProperty()
+  @IsString({ each: true })
+  @IsOptional()
+  @Transform(({ value }) => (value || []).map((item) => item.trim()))
+  readonly tagList: string[];
 }
 
-export class CreateArticleDto {
+export class NewArticleRequest {
   @ApiProperty()
   @Type(() => NewArticle)
   @IsObject()
@@ -55,6 +61,10 @@ export class ArticleDto {
 
   @ApiProperty()
   @Expose()
+  tagList: string[];
+
+  @ApiProperty()
+  @Expose()
   createdAt: Date;
 
   @ApiProperty()
@@ -82,7 +92,7 @@ export class ArticleDto {
   favoriteBy: UserDto[];
 }
 
-export class CreateArticleResponse {
+export class SingleArticleResponse {
   @ApiProperty()
   @Type(() => ArticleDto)
   @Expose()

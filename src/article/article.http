@@ -35,7 +35,8 @@ Content-Type: application/json
   "article": {
     "title": "sdf",
     "description": "sdf",
-    "body": "sdf"
+    "body": "sdf",
+    "tagList": ["sdf"]
   }
 }
 

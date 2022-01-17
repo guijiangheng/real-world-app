@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -12,6 +13,7 @@ import {
   VersionColumn,
 } from 'typeorm';
 
+import { Tag } from '@/tag/tag.entity';
 import { User } from '@/user/user.entity';
 
 import { Comment } from './comment.entity';
@@ -54,4 +56,8 @@ export class Article {
 
   @OneToMany(() => Comment, (comment) => comment.article)
   comments: Comment[];
+
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  tags: Tag[];
 }

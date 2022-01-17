@@ -61,6 +61,7 @@ export class ArticleDto {
 
   @ApiProperty()
   @Expose()
+  @Transform(({ obj }) => obj.tags.map((tag) => tag.label))
   tagList: string[];
 
   @ApiProperty()
@@ -78,7 +79,7 @@ export class ArticleDto {
 
   @ApiProperty()
   @Expose()
-  @Transform(({ value }) => value ?? 0)
+  @Transform(({ obj }) => obj.favoriteBy?.length || 0)
   favoritesCount: number;
 
   @ApiProperty()

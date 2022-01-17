@@ -65,7 +65,6 @@ export class ArticleController {
       article: {
         ...article,
         favorited: user ? article.favoriteBy.some((x) => x.id === user.id) : false,
-        favoritesCount: article.favoriteBy.length,
       },
     };
   }

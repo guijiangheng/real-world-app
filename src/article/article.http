@@ -97,3 +97,7 @@ GET {{baseUrl}}/articles/{{slug}}/comments
 DELETE {{baseUrl}}/articles/{{slug}}/comments/{{id}}
 Authorization: Bearer {{token}}
 
+###
+
+# Get tags
+GET {{baseUrl}}/tags

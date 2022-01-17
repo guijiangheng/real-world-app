@@ -22,7 +22,7 @@ export class TagController {
   @ApiOkResponse({ description: 'Ok', type: TagResponse })
   async getTags() {
     return {
-      tags: await this.tagRepo.find(),
+      tags: await (await this.tagRepo.find()).map((tag) => tag.label),
     };
   }
 }

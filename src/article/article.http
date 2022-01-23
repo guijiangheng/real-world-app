@@ -24,6 +24,19 @@ Content-Type: application/json
 
 ###
 
+# Update user
+PUT {{baseUrl}}/user
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "user": {
+    "bio": "sdf"
+  }
+}
+
+###
+
 @token = {{login.response.body.$.user.token}}
 
 # @name createArticle

@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -14,15 +15,19 @@ import { CurrentUser } from '@/decorators/current-user.decorator';
 import { Serialize } from '@/interceptors/serialize.interceptor';
 
 import { AuthService } from './../auth/auth.service';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto, UpdateUserRequest } from './dtos/create-user.dto';
 import { LoginDto } from './dtos/login.dto';
 import { UserAuthResponse, UserResponse } from './dtos/user.dto';
 import { User } from './user.entity';
+import { UserService } from './user.service';
 
 @Controller()
 @ApiTags('User and Authorization')
 export class UserController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('users/login')
@@ -70,6 +75,20 @@ export class UserController {
   async whoAmI(@CurrentUser() user: User) {
     return {
       user,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/user')
+  @Serialize(UserResponse)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update current user' })
+  @ApiResponse({ status: 201, type: UserResponse, description: 'Ok' })
+  @ApiBadRequestResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'Not found' })
+  async updateUser(@CurrentUser() user: User, @Body() body: UpdateUserRequest) {
+    return {
+      user: await this.userService.update(user.id, body),
     };
   }
 }

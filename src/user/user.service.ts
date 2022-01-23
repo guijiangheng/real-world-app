@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindCondition, FindOneOptions, Repository } from 'typeorm';
 
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto, UpdateUserRequest } from './dtos/create-user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -53,13 +53,13 @@ export class UserService {
     return this.userRepo.save(newUser);
   }
 
-  async update(id: string, attrs: Partial<User>) {
+  async update(id: string, body: UpdateUserRequest) {
     const user = await this.userRepo.findOne(id);
 
     if (!user) {
       throw new NotFoundException('user not exists');
     }
 
-    return this.userRepo.save(Object.assign(user, attrs));
+    return this.userRepo.save(Object.assign(user, body.user));
   }
 }

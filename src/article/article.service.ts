@@ -126,6 +126,16 @@ export class ArticleService {
     return article.comments;
   }
 
+  async delete(user: User, slug: string) {
+    const article = await this.findOneOrThrow({ slug }, { relations: ['author'] });
+
+    if (article.author.id !== user.id) {
+      throw new UnauthorizedException('no right to delete article');
+    }
+
+    return this.articleRepo.softDelete({ slug });
+  }
+
   async addComment(user: User, slug: string, newCommentRequest: NewCommentRequest) {
     const article = await this.findOneOrThrow({ slug }, { relations: ['comments'] });
     const comment = this.commentRepo.create({
@@ -153,16 +163,6 @@ export class ArticleService {
     }
 
     return this.commentRepo.softDelete(id);
-  }
-
-  async delete(user: User, slug: string) {
-    const article = await this.findOneOrThrow({ slug }, { relations: ['author'] });
-
-    if (article.author.id !== user.id) {
-      throw new UnauthorizedException('no right to delete article');
-    }
-
-    return this.articleRepo.softDelete({ slug });
   }
 
   slugify(title: string): string {
